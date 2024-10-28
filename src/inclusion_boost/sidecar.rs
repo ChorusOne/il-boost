@@ -142,6 +142,11 @@ impl InclusionSideCar {
                 )
                 .await?
             else {
+                tracing::info!(
+                    block_number = latest_block.header.number,
+                    current_slot = head_event.slot,
+                    "No inclusion for slot"
+                );
                 continue;
             };
 
@@ -149,6 +154,8 @@ impl InclusionSideCar {
                 .submit_inclusion_list_to_relay(next_proposer.validator_index, inclusion_list)
                 .await?;
         }
+
+        tracing::info!("Finished running sidecar");
 
         Ok(())
     }
